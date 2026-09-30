@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "SportsHub",
+    "slug": "sportshub",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0B192C"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sportshub.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0B192C"
+      },
+      "package": "com.sportshub.app"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
