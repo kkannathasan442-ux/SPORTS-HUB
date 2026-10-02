@@ -8,10 +8,35 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./apps/web/src/*", "./apps/mobile/src/*"],
+      "@sportshub/types": ["./packages/types/src"],
+      "@sportshub/config": ["./packages/config/src"],
+      "@sportshub/validation": ["./packages/validation/src"],
+      "@sportshub/api": ["./packages/api/src"],
+      "@sportshub/shared": ["./packages/shared/src"]
+    }
   },
-  "exclude": ["node_modules", "dist", "build", ".next", ".expo"]
+  "include": [
+    "apps/web/src/**/*",
+    "apps/mobile/src/**/*",
+    "apps/mobile/App.tsx",
+    "packages/*/src/**/*",
+    "tests/**/*",
+    "vitest.config.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    ".expo"
+  ]
 }

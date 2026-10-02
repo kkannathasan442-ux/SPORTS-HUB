@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Logo } from '@/components/ui/Logo';
 import { Container } from '@/components/ui/Container';
+import { HeaderNav } from '@/components/layout/HeaderNav';
 import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
@@ -33,15 +34,7 @@ export default function RootLayout({
         <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
           <Container className="flex h-16 items-center justify-between">
             <Logo size="md" />
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/health"
-                className="text-xs font-semibold text-slate-500 hover:text-sports-navy transition-colors flex items-center gap-1.5"
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                System Status
-              </Link>
-            </nav>
+            <HeaderNav />
           </Container>
         </header>
 

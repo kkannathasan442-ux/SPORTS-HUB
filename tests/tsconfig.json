@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@sportshub/types": ["../packages/types/src"],
+      "@sportshub/config": ["../packages/config/src"],
+      "@sportshub/validation": ["../packages/validation/src"],
+      "@sportshub/api": ["../packages/api/src"],
+      "@sportshub/shared": ["../packages/shared/src"]
+    }
+  },
+  "include": [
+    "**/*",
+    "../vitest.config.ts",
+    "../playwright.config.ts"
+  ],
+  "exclude": ["../node_modules"]
+}

@@ -24,7 +24,7 @@ export default function App() {
         {/* Phase Info */}
         <View style={styles.statusBox}>
           <Text style={styles.statusLabel}>FOUNDATION STATUS</Text>
-          <Text style={styles.statusValue}>STEP 0 — Project Foundation</Text>
+          <Text style={styles.statusValue}>STEP 3 — Auth & Multi-Tenant Foundation</Text>
         </View>
 
         {/* Action Button */}
