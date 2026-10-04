@@ -41,6 +41,7 @@ export function ReceptionistBookingDesk({
 }: ReceptionistBookingDeskProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [processingActionId, setProcessingActionId] = useState<string | null>(null);
 
   const [selectedVenueId, setSelectedVenueId] = useState<string>(venues[0]?.id || '');
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -114,6 +115,37 @@ export function ReceptionistBookingDesk({
   const confirmedCount = bookings.filter((b) => b.status === 'CONFIRMED').length;
   const holdCount = bookings.filter((b) => b.status === 'HOLD').length;
   const completedCount = bookings.filter((b) => b.status === 'COMPLETED').length;
+
+  const handleBookingAction = async (bookingId: string, action: 'check-in' | 'no-show' | 'complete') => {
+    setProcessingActionId(bookingId);
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/${action}`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        alert(`Failed to perform action: ${data.error?.message}`);
+      } else {
+        startTransition(() => {
+          router.refresh();
+        });
+        // Optimistically update local state for fast UI
+        setBookings((prev) =>
+          prev.map((b) => {
+            if (b.id !== bookingId) return b;
+            let newStatus = b.status;
+            if (action === 'complete') newStatus = 'COMPLETED';
+            if (action === 'no-show') newStatus = 'NO_SHOW';
+            return { ...b, status: newStatus as any };
+          })
+        );
+      }
+    } catch (e: any) {
+      alert(`Action error: ${e.message}`);
+    } finally {
+      setProcessingActionId(null);
+    }
+  };
 
   const handleCreateWalkIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -403,15 +435,48 @@ export function ReceptionistBookingDesk({
                         {b.status === 'CONFIRMED' ? 'Paid / Confirmed' : 'Pending'}
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 text-right">
+                    <td className="py-3.5 px-4 text-right flex items-center justify-end gap-2">
                       <a
                         href={`/customer/bookings/${b.id}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs font-bold text-sports-accent hover:underline inline-flex items-center gap-1"
+                        className="text-xs font-bold text-slate-500 hover:text-sports-accent"
+                        title="View Receipt"
                       >
-                        Receipt &rarr;
+                        Receipt
                       </a>
+                      
+                      {b.status === 'CONFIRMED' && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-[10px] px-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                            disabled={processingActionId === b.id}
+                            onClick={() => handleBookingAction(b.id, 'check-in')}
+                          >
+                            {processingActionId === b.id ? '...' : 'Check-In'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-[10px] px-2 border-blue-200 text-blue-700 hover:bg-blue-50"
+                            disabled={processingActionId === b.id}
+                            onClick={() => handleBookingAction(b.id, 'complete')}
+                          >
+                            {processingActionId === b.id ? '...' : 'Complete'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-[10px] px-2 border-rose-200 text-rose-700 hover:bg-rose-50"
+                            disabled={processingActionId === b.id}
+                            onClick={() => handleBookingAction(b.id, 'no-show')}
+                          >
+                            {processingActionId === b.id ? '...' : 'No-Show'}
+                          </Button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -36,7 +36,7 @@ interface OwnerPaymentsPageProps {
 export default async function OwnerPaymentsPage({ searchParams }: OwnerPaymentsPageProps) {
   const context = await getActiveOrganizationContext();
   if (!context || !context.activeOrganization) {
-    redirect('/auth/login?redirect=/owner/payments');
+    redirect('/login?redirect=/owner/payments');
   }
 
   const org = context.activeOrganization;

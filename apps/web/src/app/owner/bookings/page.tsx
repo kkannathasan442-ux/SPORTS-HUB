@@ -33,7 +33,7 @@ interface OwnerBookingsPageProps {
 export default async function OwnerBookingsPage({ searchParams }: OwnerBookingsPageProps) {
   const context = await getActiveOrganizationContext();
   if (!context || !context.activeOrganization) {
-    redirect('/auth/login?redirect=/owner/bookings');
+    redirect('/login?redirect=/owner/bookings');
   }
 
   const org = context.activeOrganization;

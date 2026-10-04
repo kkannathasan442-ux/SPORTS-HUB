@@ -437,6 +437,59 @@ export class NotificationDispatcher {
       console.warn('Notification dispatch error (Hold Expiring):', err);
     }
   }
+
+  async dispatchTeamMemberInvited(
+    supabase: SupabaseClient,
+    invite: { id: string; team_id: string; invited_email: string; organization_id?: string | null },
+    teamName: string,
+    inviterName: string,
+    recipientUserId?: string | null
+  ): Promise<void> {
+    try {
+      if (!recipientUserId) return; // Only dispatch in-app if the user exists
+      const idempotencyKey = `team_invite_${invite.id}_inapp`;
+      await createNotification(supabase, {
+        organizationId: invite.organization_id || null,
+        recipientUserId: recipientUserId,
+        notificationType: 'TEAM_MEMBER_INVITED' as any,
+        title: `Team Invitation: ${teamName}`,
+        message: `${inviterName} has invited you to join ${teamName}. Check your invitations to accept.`,
+        relatedEntityType: 'team_invitation',
+        relatedEntityId: invite.id,
+        channel: 'IN_APP',
+        idempotencyKey,
+      });
+    } catch (err) {
+      console.warn('Notification dispatch error (Team Invited):', err);
+    }
+  }
+
+  async dispatchTeamMemberJoined(
+    supabase: SupabaseClient,
+    teamId: string,
+    userId: string,
+    teamName: string,
+    joinedUserName: string,
+    captainUserId: string,
+    organizationId?: string | null
+  ): Promise<void> {
+    try {
+      const idempotencyKey = `team_joined_${teamId}_${userId}_inapp`;
+      await createNotification(supabase, {
+        organizationId: organizationId || null,
+        recipientUserId: captainUserId,
+        notificationType: 'TEAM_MEMBER_JOINED' as any,
+        title: `New Team Member`,
+        message: `${joinedUserName} has accepted the invitation and joined ${teamName}.`,
+        relatedEntityType: 'team',
+        relatedEntityId: teamId,
+        channel: 'IN_APP',
+        idempotencyKey,
+      });
+    } catch (err) {
+      console.warn('Notification dispatch error (Team Joined):', err);
+    }
+  }
 }
 
 export const defaultNotificationDispatcher = new NotificationDispatcher();

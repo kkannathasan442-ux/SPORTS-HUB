@@ -1101,3 +1101,141 @@ export const customerBookingQuerySchema = z.object({
 
 export type UpdateCustomerProfileSchema = z.infer<typeof updateCustomerProfileSchema>;
 export type CustomerBookingQuerySchema = z.infer<typeof customerBookingQuerySchema>;
+
+// ============================================================================
+// STEP 15 — Match / Game Management Schemas
+// ============================================================================
+
+export const matchStatusSchema = z.enum([
+  'DRAFT',
+  'SCHEDULED',
+  'WARMUP',
+  'LIVE',
+  'PAUSED',
+  'COMPLETED',
+  'ABANDONED',
+  'CANCELLED',
+]);
+
+export const matchTypeSchema = z.enum([
+  'CASUAL',
+  'PRACTICE',
+  'COMPETITIVE',
+  'TOURNAMENT',
+  'LEAGUE',
+]);
+
+export const matchFormatSchema = z.enum([
+  'SINGLES',
+  'DOUBLES',
+  'TEAM',
+]);
+
+export const matchParticipantRoleSchema = z.enum([
+  'CAPTAIN',
+  'PLAYER',
+  'SUBSTITUTE',
+]);
+
+export const matchParticipantStatusSchema = z.enum([
+  'INVITED',
+  'CONFIRMED',
+  'DECLINED',
+  'PLAYING',
+  'BENCH',
+]);
+
+export const matchWinnerSideSchema = z.enum([
+  'SIDE_A',
+  'SIDE_B',
+  'DRAW',
+  'NO_RESULT',
+]);
+
+export const matchCompetitorSideSchema = z.enum([
+  'SIDE_A',
+  'SIDE_B',
+]);
+
+export const createMatchSchema = z.object({
+  title: z.string().max(200).optional().nullable(),
+  sportId: z.string().uuid('Invalid sport ID').optional(),
+  matchType: matchTypeSchema.default('CASUAL'),
+  matchFormat: matchFormatSchema.default('SINGLES'),
+  bookingId: z.string().uuid('Invalid booking ID').optional().nullable(),
+  venueId: z.string().uuid('Invalid venue ID').optional().nullable(),
+  facilityId: z.string().uuid('Invalid facility ID').optional().nullable(),
+  organizationId: z.string().uuid('Invalid organization ID').optional().nullable(),
+  scheduledStart: z.string().datetime().optional().nullable(),
+  scheduledEnd: z.string().datetime().optional().nullable(),
+  metadata: z.record(z.unknown()).default({}),
+});
+
+export const updateMatchSchema = z.object({
+  title: z.string().max(200).optional().nullable(),
+  venueId: z.string().uuid('Invalid venue ID').optional().nullable(),
+  facilityId: z.string().uuid('Invalid facility ID').optional().nullable(),
+  scheduledStart: z.string().datetime().optional().nullable(),
+  scheduledEnd: z.string().datetime().optional().nullable(),
+  scorerUserId: z.string().uuid('Invalid scorer user ID').optional().nullable(),
+  metadata: z.record(z.unknown()).optional(),
+});
+
+export const createCompetitorSchema = z.object({
+  side: matchCompetitorSideSchema,
+  teamId: z.string().uuid('Invalid team ID').optional().nullable(),
+  competitorName: z.string().min(1, 'Competitor name is required').max(100),
+});
+
+export const updateCompetitorSchema = z.object({
+  competitorName: z.string().min(1, 'Competitor name is required').max(100).optional(),
+  teamId: z.string().uuid('Invalid team ID').optional().nullable(),
+});
+
+export const createParticipantSchema = z.object({
+  competitorId: z.string().uuid('Invalid competitor ID'),
+  userId: z.string().uuid('Invalid user ID').optional().nullable(),
+  displayName: z.string().min(1, 'Display name is required').max(100),
+  teamId: z.string().uuid('Invalid team ID').optional().nullable(),
+  role: matchParticipantRoleSchema.default('PLAYER'),
+  jerseyNumber: z.number().int().min(0).max(999).optional().nullable(),
+  status: matchParticipantStatusSchema.default('CONFIRMED'),
+});
+
+export const updateParticipantSchema = z.object({
+  displayName: z.string().min(1).max(100).optional(),
+  role: matchParticipantRoleSchema.optional(),
+  jerseyNumber: z.number().int().min(0).max(999).optional().nullable(),
+  status: matchParticipantStatusSchema.optional(),
+});
+
+export const transitionMatchStatusSchema = z.object({
+  status: matchStatusSchema,
+  winnerSide: matchWinnerSideSchema.optional().nullable(),
+  resultSummary: z.string().max(500).optional().nullable(),
+  reason: z.string().max(500).optional().nullable(),
+});
+
+export const matchQueryFilterSchema = z.object({
+  organizationId: z.string().uuid().optional(),
+  sportId: z.string().uuid().optional(),
+  venueId: z.string().uuid().optional(),
+  facilityId: z.string().uuid().optional(),
+  status: matchStatusSchema.optional(),
+  matchFormat: matchFormatSchema.optional(),
+  page: z.preprocess((v) => (v !== undefined && v !== null && v !== '' ? Number(v) : 1), z.number().int().min(1).default(1)),
+  limit: z.preprocess((v) => (v !== undefined && v !== null && v !== '' ? Number(v) : 20), z.number().int().min(1).max(100).default(20)),
+});
+
+export type MatchStatusSchema = z.infer<typeof matchStatusSchema>;
+export type MatchTypeSchema = z.infer<typeof matchTypeSchema>;
+export type MatchFormatSchema = z.infer<typeof matchFormatSchema>;
+export type CreateMatchSchema = z.input<typeof createMatchSchema>;
+export type UpdateMatchSchema = z.input<typeof updateMatchSchema>;
+export type CreateCompetitorSchema = z.input<typeof createCompetitorSchema>;
+export type UpdateCompetitorSchema = z.input<typeof updateCompetitorSchema>;
+export type CreateParticipantSchema = z.input<typeof createParticipantSchema>;
+export type UpdateParticipantSchema = z.input<typeof updateParticipantSchema>;
+export type TransitionMatchStatusSchema = z.input<typeof transitionMatchStatusSchema>;
+export type MatchQueryFilterSchema = z.infer<typeof matchQueryFilterSchema>;
+

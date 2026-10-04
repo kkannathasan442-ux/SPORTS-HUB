@@ -19,6 +19,7 @@ export default defineConfig({
       '@sportshub/validation': path.resolve(__dirname, 'packages/validation/src'),
       '@sportshub/api': path.resolve(__dirname, 'packages/api/src'),
       '@sportshub/shared': path.resolve(__dirname, 'packages/shared/src'),
+      '@': path.resolve(__dirname, 'apps/web/src'),
     },
   },
 });

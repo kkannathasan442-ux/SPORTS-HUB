@@ -308,6 +308,12 @@ export type NotificationPermission = 'notification.read' | 'notification.manage'
 export type ReportPermission = 'report.read' | 'report.financial' | 'report.export';
 export type AuditPermission = 'audit.read' | 'audit.manage';
 export type SettingsPermission = 'settings.read' | 'settings.manage';
+export type MatchPermission =
+  | 'match.read'
+  | 'match.create'
+  | 'match.manage'
+  | 'match.cancel'
+  | 'match.score';
 
 export type Permission =
   | PlatformPermission
@@ -322,7 +328,8 @@ export type Permission =
   | NotificationPermission
   | ReportPermission
   | AuditPermission
-  | SettingsPermission;
+  | SettingsPermission
+  | MatchPermission;
 
 export type RolePermissionsMap = Record<AppRole, readonly Permission[]>;
 
@@ -936,6 +943,8 @@ export type NotificationType =
   | 'PAYMENT_SUCCESS'
   | 'PAYMENT_FAILED'
   | 'REFUND_PROCESSED'
+  | 'TEAM_MEMBER_INVITED'
+  | 'TEAM_MEMBER_JOINED'
   | 'SYSTEM_ALERT';
 
 export type NotificationChannel = 'IN_APP' | 'EMAIL' | 'SMS' | 'PUSH';
@@ -1236,7 +1245,24 @@ export type AuditAction =
   | 'MAINTENANCE_BLOCK_CANCELLED'
   | 'BOOKING_CANCELLED_BY_ADMIN'
   | 'REFUND_APPROVED'
-  | 'REFUND_REJECTED';
+  | 'REFUND_REJECTED'
+  | 'MATCH_CREATED'
+  | 'MATCH_UPDATED'
+  | 'MATCH_SCHEDULED'
+  | 'MATCH_WARMUP'
+  | 'MATCH_STARTED'
+  | 'MATCH_PAUSED'
+  | 'MATCH_RESUMED'
+  | 'MATCH_COMPLETED'
+  | 'MATCH_CANCELLED'
+  | 'MATCH_ABANDONED'
+  | 'COMPETITOR_ADDED'
+  | 'COMPETITOR_UPDATED'
+  | 'COMPETITOR_REMOVED'
+  | 'PARTICIPANT_ADDED'
+  | 'PARTICIPANT_UPDATED'
+  | 'PARTICIPANT_REMOVED'
+  | 'SCORER_ASSIGNED';
 
 export interface AuditLog {
   id: string;
@@ -1373,5 +1399,145 @@ export interface CustomerReceipt {
   paymentMethod?: string | null;
   paidAt?: string | null;
   issuedAt: string;
+}
+
+// ============================================================================
+// STEP 15 — Match / Game Management Types
+// ============================================================================
+
+export type MatchStatus =
+  | 'DRAFT'
+  | 'SCHEDULED'
+  | 'WARMUP'
+  | 'LIVE'
+  | 'PAUSED'
+  | 'COMPLETED'
+  | 'ABANDONED'
+  | 'CANCELLED';
+
+export type MatchType =
+  | 'CASUAL'
+  | 'PRACTICE'
+  | 'COMPETITIVE'
+  | 'TOURNAMENT'
+  | 'LEAGUE';
+
+export type MatchFormat =
+  | 'SINGLES'
+  | 'DOUBLES'
+  | 'TEAM';
+
+export type MatchParticipantRole =
+  | 'CAPTAIN'
+  | 'PLAYER'
+  | 'SUBSTITUTE';
+
+export type MatchParticipantStatus =
+  | 'INVITED'
+  | 'CONFIRMED'
+  | 'DECLINED'
+  | 'PLAYING'
+  | 'BENCH';
+
+export type MatchWinnerSide =
+  | 'SIDE_A'
+  | 'SIDE_B'
+  | 'DRAW'
+  | 'NO_RESULT';
+
+export type MatchCompetitorSide = 'SIDE_A' | 'SIDE_B';
+
+export interface Match {
+  id: string;
+  match_reference: string;
+  sport_id: string;
+  organization_id: string | null;
+  venue_id: string | null;
+  facility_id: string | null;
+  booking_id: string | null;
+  title?: string | null;
+  match_type: MatchType;
+  match_format: MatchFormat;
+  status: MatchStatus;
+  scheduled_start?: string | null;
+  scheduled_end?: string | null;
+  actual_start?: string | null;
+  actual_end?: string | null;
+  created_by: string;
+  scorer_user_id?: string | null;
+  winner_side?: MatchWinnerSide | null;
+  result_summary?: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MatchCompetitor {
+  id: string;
+  match_id: string;
+  side: MatchCompetitorSide;
+  team_id?: string | null;
+  competitor_name: string;
+  score_summary?: string | null;
+  is_winner?: boolean | null;
+  created_at: string;
+}
+
+export interface MatchParticipant {
+  id: string;
+  match_id: string;
+  competitor_id: string;
+  user_id?: string | null;
+  display_name: string;
+  team_id?: string | null;
+  role: MatchParticipantRole;
+  jersey_number?: number | null;
+  status: MatchParticipantStatus;
+  created_at: string;
+}
+
+export interface MatchCompetitorWithParticipants extends MatchCompetitor {
+  participants: MatchParticipant[];
+  team?: {
+    id: string;
+    name: string;
+    logo_url?: string | null;
+  } | null;
+}
+
+export interface MatchWithDetails extends Match {
+  sport?: {
+    id: string;
+    name: string;
+    slug: string;
+    icon?: string | null;
+    supports_team: boolean;
+    supports_live_scoring: boolean;
+  } | null;
+  organization?: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+  venue?: {
+    id: string;
+    name: string;
+    slug: string;
+    timezone: string;
+  } | null;
+  facility?: {
+    id: string;
+    name: string;
+    facility_type?: string | null;
+  } | null;
+  booking?: {
+    id: string;
+    booking_reference: string;
+    status: BookingStatus;
+    start_time: string;
+    end_time: string;
+    booking_date: string;
+  } | null;
+  competitors: MatchCompetitorWithParticipants[];
 }
 

@@ -116,7 +116,7 @@ CREATE POLICY "notifications_staff_select"
   TO authenticated
   USING (
     organization_id IS NOT NULL 
-    AND public.is_org_member(organization_id, auth.uid())
+    AND public.is_org_member(organization_id)
   );
 
 -- Recipients can update only the read_at timestamp on their own notifications

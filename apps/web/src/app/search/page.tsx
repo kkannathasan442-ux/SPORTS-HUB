@@ -3,6 +3,7 @@ import { Container } from '@/components/ui/Container';
 import { SearchPageView } from '@/components/discovery/SearchPageView';
 import { getActivePlatformSports } from '@/lib/discovery/public-venue';
 import { searchPublicVenues } from '@/lib/discovery/search-venues';
+import { searchFacilities } from '@/lib/discovery/search-facilities';
 import { venueSearchParamsSchema } from '@sportshub/validation';
 import type { Metadata } from 'next';
 
@@ -31,12 +32,15 @@ export default async function SearchPage(props: SearchPageProps) {
 
   // Parse and validate with zod schema
   const parsed = venueSearchParamsSchema.safeParse(rawParams);
-  const validatedParams = parsed.success ? parsed.data : {};
+  const validatedParams = parsed.success ? parsed.data : ({} as any);
+
+  const isSlotSearch = Boolean(validatedParams.date && validatedParams.startTime);
 
   // Fetch sports and search results
-  const [sports, results] = await Promise.all([
+  const [sports, results, facilityResults] = await Promise.all([
     getActivePlatformSports(),
-    searchPublicVenues(validatedParams),
+    !isSlotSearch ? searchPublicVenues(validatedParams) : Promise.resolve(null),
+    isSlotSearch ? searchFacilities(validatedParams) : Promise.resolve(null),
   ]);
 
   return (
@@ -45,6 +49,7 @@ export default async function SearchPage(props: SearchPageProps) {
         <SearchPageView
           sports={sports}
           results={results}
+          facilityResults={facilityResults}
           appliedParams={validatedParams}
         />
       </Container>

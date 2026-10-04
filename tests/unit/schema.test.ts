@@ -40,10 +40,13 @@ describe('Database Schema & Migration Validation — STEP 2', () => {
     '20261001000020_notifications.sql',
     '20261001000021_reporting_indexes.sql',
     '20261001000022_organization_settings_and_audit_logs.sql',
+    '20261001000023_booking_operations.sql',
+    '20261001000024_teams_and_rosters.sql',
+    '20261001000025_matches.sql',
   ];
 
   describe('Migration Files Structure & Ordering', () => {
-    it('should have all 22 core migration files present in correct order', () => {
+    it('should have all 25 core migration files present in correct order', () => {
       const files = fs
         .readdirSync(migrationsDir)
         .filter((f) => f.endsWith('.sql'))
@@ -69,6 +72,9 @@ describe('Database Schema & Migration Validation — STEP 2', () => {
         'pricing_rules',
         'maintenance_blocks',
         'customer_profiles',
+        'teams',
+        'team_members',
+        'team_invitations',
       ];
 
       for (const table of requiredTables) {
@@ -80,6 +86,10 @@ describe('Database Schema & Migration Validation — STEP 2', () => {
     it('should verify all required enums are created in migrations', () => {
       const enumsMigration = fs.readFileSync(
         path.join(migrationsDir, '20261001000002_enums.sql'),
+        'utf-8'
+      );
+      const teamsMigration = fs.readFileSync(
+        path.join(migrationsDir, '20261001000024_teams_and_rosters.sql'),
         'utf-8'
       );
 
@@ -95,6 +105,11 @@ describe('Database Schema & Migration Validation — STEP 2', () => {
 
       for (const enumName of requiredEnums) {
         expect(enumsMigration).toContain(`CREATE TYPE public.${enumName} AS ENUM`);
+      }
+
+      const teamEnums = ['team_role', 'team_invite_status'];
+      for (const enumName of teamEnums) {
+        expect(teamsMigration).toContain(`CREATE TYPE public.${enumName} AS ENUM`);
       }
     });
 

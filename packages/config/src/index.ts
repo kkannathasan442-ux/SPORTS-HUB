@@ -202,6 +202,11 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'audit.manage',
     'settings.read',
     'settings.manage',
+    'match.read',
+    'match.create',
+    'match.manage',
+    'match.cancel',
+    'match.score',
   ],
   OWNER: [
     'organization.read',
@@ -233,6 +238,11 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'audit.manage',
     'settings.read',
     'settings.manage',
+    'match.read',
+    'match.create',
+    'match.manage',
+    'match.cancel',
+    'match.score',
   ],
   MANAGER: [
     'organization.read',
@@ -257,6 +267,11 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'report.export',
     'audit.read',
     'settings.read',
+    'match.read',
+    'match.create',
+    'match.manage',
+    'match.cancel',
+    'match.score',
   ],
   RECEPTIONIST: [
     'organization.read',
@@ -272,6 +287,10 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'payment.create',
     'notification.read',
     'report.read',
+    'match.read',
+    'match.create',
+    'match.manage',
+    'match.cancel',
   ],
   SCORER: [
     'organization.read',
@@ -279,6 +298,8 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'facility.read',
     'scoring.read',
     'scoring.manage',
+    'match.read',
+    'match.score',
   ],
   COACH: [
     'organization.read',
@@ -287,6 +308,9 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'customer.read',
     'customer.manage',
     'booking.read',
+    'match.read',
+    'match.create',
+    'match.manage',
   ],
   CUSTOMER: [
     'customer.read',
@@ -296,10 +320,14 @@ export const ROLE_PERMISSIONS: RolePermissionsMap = {
     'payment.read',
     'payment.create',
     'notification.read',
+    'match.read',
+    'match.create',
+    'match.cancel',
   ],
   PLAYER: [
     'customer.read',
     'booking.read',
+    'match.read',
   ],
 } as const;
 

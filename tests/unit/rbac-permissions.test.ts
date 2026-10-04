@@ -156,8 +156,11 @@ describe('RBAC Permissions & Role Mapping — STEP 3', () => {
         'payment.read',
         'payment.create',
         'notification.read',
+        'match.read',
+        'match.create',
+        'match.cancel',
       ]);
-      expect(getRolePermissions('PLAYER')).toEqual(['customer.read', 'booking.read']);
+      expect(getRolePermissions('PLAYER')).toEqual(['customer.read', 'booking.read', 'match.read']);
 
       expect(hasPermission('CUSTOMER', 'venue.manage')).toBe(false);
       expect(hasPermission('CUSTOMER', 'facility.manage')).toBe(false);

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { DiscoverySearchBar } from './DiscoverySearchBar';
 import { SearchFilterSidebar } from './SearchFilterSidebar';
 import { VenueList } from './VenueList';
+import { FacilityList } from './FacilityList';
 import { MapListToggle, MapFoundationView } from './MapListToggle';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -17,11 +18,12 @@ import type {
 
 interface SearchPageViewProps {
   sports: Sport[];
-  results: DiscoverySearchResults;
+  results: DiscoverySearchResults | null;
+  facilityResults?: any | null;
   appliedParams: VenueSearchParams;
 }
 
-export function SearchPageView({ sports, results, appliedParams }: SearchPageViewProps) {
+export function SearchPageView({ sports, results, facilityResults, appliedParams }: SearchPageViewProps) {
   const [viewMode, setViewMode] = useState<'list' | 'map'>(appliedParams.view || 'list');
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -30,6 +32,8 @@ export function SearchPageView({ sports, results, appliedParams }: SearchPageVie
   }, []);
 
   const activeSport = sports.find((s) => s.id === appliedParams.sportId);
+  const isSlotSearch = Boolean(facilityResults);
+  const totalFound = isSlotSearch ? facilityResults?.totalCount : results?.totalCount;
 
   return (
     <div className="space-y-6" data-hydrated={isHydrated ? 'true' : 'false'}>
@@ -71,17 +75,16 @@ export function SearchPageView({ sports, results, appliedParams }: SearchPageVie
                 <Compass className="w-4 h-4 text-sports-navy" />
                 <h1 className="text-base font-bold text-slate-900">
                   {appliedParams.locationText
-                    ? `Sports Venues in "${appliedParams.locationText}"`
+                    ? `Sports ${isSlotSearch ? 'Facilities' : 'Venues'} in "${appliedParams.locationText}"`
                     : activeSport
-                    ? `${activeSport.name} Venues`
-                    : 'Discover Sports Venues'}
+                    ? `${activeSport.name} ${isSlotSearch ? 'Facilities' : 'Venues'}`
+                    : `Discover Sports ${isSlotSearch ? 'Facilities' : 'Venues'}`}
                 </h1>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
                 <span>
-                  Found <strong>{results.totalCount}</strong> matching venue
-                  {results.totalCount === 1 ? '' : 's'}
+                  Found <strong>{totalFound}</strong> matching {isSlotSearch ? 'facilit' + (totalFound === 1 ? 'y' : 'ies') : 'venue' + (totalFound === 1 ? '' : 's')}
                 </span>
                 {appliedParams.radiusKm && appliedParams.latitude && (
                   <Badge variant="default" className="text-[10px] py-0.5">
@@ -102,25 +105,41 @@ export function SearchPageView({ sports, results, appliedParams }: SearchPageVie
             </div>
 
             {/* View Mode Toggle */}
-            <MapListToggle
-              viewMode={viewMode}
-              onViewChange={setViewMode}
-              venues={results.items}
-            />
+            {!isSlotSearch && (
+              <MapListToggle
+                viewMode={viewMode}
+                onViewChange={setViewMode}
+                venues={results?.items || []}
+              />
+            )}
           </div>
 
-          {/* Results Grid List (When List Mode is active) */}
+          {/* Results Grid List */}
           {viewMode === 'list' && (
-            <VenueList
-              venues={results.items}
-              totalCount={results.totalCount}
-              currentPage={results.page}
-              totalPages={results.totalPages}
-            />
+            isSlotSearch && facilityResults ? (
+              <FacilityList 
+                facilities={facilityResults.items}
+                totalCount={facilityResults.totalCount}
+                currentPage={facilityResults.page}
+                totalPages={facilityResults.totalPages}
+                date={appliedParams.date as string}
+              />
+            ) : (
+              results && (
+                <VenueList
+                  venues={results.items}
+                  totalCount={results.totalCount}
+                  currentPage={results.page}
+                  totalPages={results.totalPages}
+                />
+              )
+            )
           )}
 
-          {/* Geographic Map View (When Map Mode is active) */}
-          {viewMode === 'map' && <MapFoundationView venues={results.items} />}
+          {/* Geographic Map View (When Map Mode is active and not slot search) */}
+          {viewMode === 'map' && !isSlotSearch && results && (
+            <MapFoundationView venues={results.items} />
+          )}
         </div>
       </div>
     </div>

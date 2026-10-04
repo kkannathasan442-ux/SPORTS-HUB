@@ -165,7 +165,7 @@ export function BookingSlotPicker({
 
       if (!res.ok || !json.success) {
         if (res.status === 401) {
-          router.push(`/auth/login?redirect=/venues/${venue.id}/facilities/${facility.id}/book`);
+          router.push(`/login?redirect=/venues/${venue.id}/facilities/${facility.id}/book`);
           return;
         }
         throw new Error(json.error?.message || 'Failed to create reservation hold');

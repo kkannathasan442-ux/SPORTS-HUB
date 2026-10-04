@@ -15,7 +15,8 @@
       "@sportshub/config": ["../packages/config/src"],
       "@sportshub/validation": ["../packages/validation/src"],
       "@sportshub/api": ["../packages/api/src"],
-      "@sportshub/shared": ["../packages/shared/src"]
+      "@sportshub/shared": ["../packages/shared/src"],
+      "@/*": ["../apps/web/src/*"]
     }
   },
   "include": [
