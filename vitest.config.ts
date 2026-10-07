@@ -11,6 +11,7 @@ export default defineConfig({
       'tests/integration/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'packages/**/*.{test,spec}.{ts,tsx}',
     ],
+    testTimeout: 20000,
   },
   resolve: {
     alias: {

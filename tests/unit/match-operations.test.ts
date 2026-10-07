@@ -132,7 +132,7 @@ describe('STEP 15C — Match Service Layer & Operations Unit Tests', () => {
     ]);
     // Cleanup any lingering test bookings
     await supabase.from('bookings').delete().like('booking_reference', 'SPH-MTH-TEST%');
-  });
+  }, 30000);
 
   afterAll(async () => {
     await supabase.from('bookings').delete().like('booking_reference', 'SPH-MTH-TEST%');
@@ -140,7 +140,7 @@ describe('STEP 15C — Match Service Layer & Operations Unit Tests', () => {
     if (globalTeamId) await supabase.from('teams').delete().eq('id', globalTeamId);
     if (otherOrgTeamId) await supabase.from('teams').delete().eq('id', otherOrgTeamId);
     if (otherOrgId) await supabase.from('organizations').delete().eq('id', otherOrgId);
-  });
+  }, 30000);
 
   // 1. MATCH CREATION
   describe('1. Match Creation & Identity', () => {

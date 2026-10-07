@@ -349,6 +349,17 @@ describe('STEP 7 — Payment & Transaction Management Engine Unit Tests', () => 
                 if (table === 'bookings') return { data: mockBooking, error: null };
                 return { data: null, error: null };
               },
+              maybeSingle: async () => {
+                if (table === 'payment_transactions') return { data: pendingTx, error: null };
+                if (table === 'bookings') return { data: mockBooking, error: null };
+                return { data: null, error: null };
+              },
+            }),
+          }),
+          insert: () => ({
+            select: () => ({
+              single: async () => ({ data: { id: 'notif-1' }, error: null }),
+              maybeSingle: async () => ({ data: { id: 'notif-1' }, error: null }),
             }),
           }),
           update: (updates: any) => ({
@@ -415,6 +426,13 @@ describe('STEP 7 — Payment & Transaction Management Engine Unit Tests', () => 
           select: () => ({
             eq: () => ({
               single: async () => ({ data: pendingTx, error: null }),
+              maybeSingle: async () => ({ data: pendingTx, error: null }),
+            }),
+          }),
+          insert: () => ({
+            select: () => ({
+              single: async () => ({ data: { id: 'notif-1' }, error: null }),
+              maybeSingle: async () => ({ data: { id: 'notif-1' }, error: null }),
             }),
           }),
           update: (updates: any) => ({

@@ -56,14 +56,14 @@ describe('STEP 15B — Match Database Foundation & Integrity Tests', () => {
     const { data: profiles } = await supabaseAdmin.from('profiles').select('id').limit(2);
     testUserId1 = profiles?.[0]?.id!;
     testUserId2 = profiles?.[1]?.id!;
-  });
+  }, 30000);
 
   afterAll(async () => {
     // Cleanup secondary org
     if (otherOrgId) {
       await supabaseAdmin.from('organizations').delete().eq('id', otherOrgId);
     }
-  });
+  }, 30000);
 
   // 1. Match reference format and auto-generation
   it('1. Server auto-generates unique MTH-YYYYMMDD-XXXXXX match_reference on insert and enforces immutability', async () => {

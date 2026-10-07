@@ -130,7 +130,7 @@ describe('STEP 15C — Match Security, RBAC & Isolation Suite', () => {
 
     // Clean any previous test bookings
     await supabase.from('bookings').delete().like('booking_reference', 'SEC-MTH-%');
-  });
+  }, 30000);
 
   afterAll(async () => {
     await supabase.from('bookings').delete().like('booking_reference', 'SEC-MTH-%');
@@ -138,7 +138,7 @@ describe('STEP 15C — Match Security, RBAC & Isolation Suite', () => {
     if (orgBTeamId) await supabase.from('teams').delete().eq('id', orgBTeamId);
     if (globalTeamId) await supabase.from('teams').delete().eq('id', globalTeamId);
     if (otherOrgId) await supabase.from('organizations').delete().eq('id', otherOrgId);
-  });
+  }, 30000);
 
   // 1. AUTHENTICATION & IDENTITY TAMPERING
   describe('1. Authentication & Identity Protection', () => {

@@ -148,6 +148,17 @@ describe('STEP 7 — Payment Concurrency & Idempotency Tests', () => {
               if (table === 'bookings') return { data: mockBooking, error: null };
               return { data: null, error: null };
             },
+            maybeSingle: async () => {
+              if (table === 'payment_transactions') return { data: memoryTx, error: null };
+              if (table === 'bookings') return { data: mockBooking, error: null };
+              return { data: null, error: null };
+            },
+          }),
+        }),
+        insert: () => ({
+          select: () => ({
+            single: async () => ({ data: { id: 'notif-1' }, error: null }),
+            maybeSingle: async () => ({ data: { id: 'notif-1' }, error: null }),
           }),
         }),
         update: (updates: any) => ({

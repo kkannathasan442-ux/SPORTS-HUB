@@ -43,10 +43,19 @@ describe('Database Schema & Migration Validation — STEP 2', () => {
     '20261001000023_booking_operations.sql',
     '20261001000024_teams_and_rosters.sql',
     '20261001000025_matches.sql',
+    '20261001000026_cricket_scoring.sql',
+    '20261001000027_cricket_scoring_rpc.sql',
+    '20261001000028_cricket_match_completion.sql',
+    '20261001000029_cricket_scorecard_public_read.sql',
+    '20261001000030_badminton_scoring.sql',
+    '20261001000031_badminton_scoring_rpc.sql',
+    '20261001000032_badminton_match_progression.sql',
+    '20261001000033_basketball_database_foundation.sql',
+    '20261001000034_basketball_scoring_clock_rpc.sql',
   ];
 
   describe('Migration Files Structure & Ordering', () => {
-    it('should have all 25 core migration files present in correct order', () => {
+    it('should have all 32 core migration files present in correct order', () => {
       const files = fs
         .readdirSync(migrationsDir)
         .filter((f) => f.endsWith('.sql'))

@@ -8,10 +8,10 @@ SportsHub is a modern, multi-tenant digital sports and recreation platform desig
 
 ## Current Status
 
-> **STEP 2 completed — Core Database Schema established.**
-> **Authentication, RLS policies, booking, and payments are not implemented yet.**
+> **STEP 15E completed — Match Management UI and tests established.**
+> **Core database schema, authentication, RLS policies, booking, payments, and match management are implemented.**
 
-This repository contains the **STEP 2 — Core Database Schema**. Business features (such as user authentication, RLS security policies, booking, payments, tournaments, live scoring, etc.) will be added in subsequent verified steps.
+This repository contains up to **STEP 15E — Match Management UI and tests**. Business features such as user authentication, RLS security policies, booking, payments, and match management are implemented and verified. Future steps may add tournaments, live scoring, etc.
 
 ---
 

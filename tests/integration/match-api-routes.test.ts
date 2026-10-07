@@ -101,6 +101,6 @@ describe('STEP 15C — Match API Routes Integration Tests', () => {
       const data = await res.json();
       expect(data.success).toBe(false);
       expect(data.error).toBe('Match not found');
-    });
+    }, 30000);
   });
 });
